@@ -1,0 +1,77 @@
+bark:
+  - notifyLevel: 1
+    notifyFormatter: ["{{data}}"]
+    description: "bark 1"
+    webhook: "https://api.day.app/qr3XSFqxxxxxxx/{{data}}"
+    sound: "minuet"
+
+chanify:
+  - notifyLevel: 1
+    notifyFormatter: ["{{data}}"]
+    webhook: "https://api.chanify.net/v1/sender/CIDt-ZgGEiJBQTZaVDIySkxxxxxxx"
+    text: "Hello from notify. {{data}}"
+
+dingtalk:
+  - notifyLevel: 2
+    notifyFormatter: ["{{data}}"]
+    token: "5ff195509f5653f6bfffxxxxxxx"
+    content: "Hello from notify. {{data}}"
+
+  - notifyLevel: 2
+    token: "eb1f45d559a1cea076xxxxxxx"
+    secret: "SECabd4d4e56d8899xxxxxxx"
+    messageType: "feedCard"
+    links: [
+      {
+        "title":"test",
+        "messageURL":"test",
+        "picURL":"test"
+      }
+    ]
+
+discord:
+  - notifyLevel: 2
+    notifyFormatter: ["{{data}}"]
+    webhook: "https://discord.com/api/webhooks/985040095xxxxxxx/uqTQQuwxxxxxxx-xxxxxxx"
+    content: "Hello from notify. {{data}}"
+
+googlechat:
+  - notifyLevel: 2
+    notifyFormatter: ["{{data}}"]
+    webhook: "https://chat.googleapis.com/v1/spaces/AAAAxxxxxxx/messages?key=AIzaSyDdI0xxxxxxx&token=BBSS0tJT_7BVGSxxxxxxx"
+    text: "Hello from notify. {{data}}"
+
+mailgun:
+  - notifyLevel: 3
+    notifyFormatter: ["{{data}}, {{data2}}"]
+    webhook: "https://api.mailgun.net/v3/sandbox7a9b01aeede542f98635a5fdfa9fbac1.mailgun.org/messages"
+    apiKey: "3393aa7e232d9xxxxxxx"
+    from: "Mailgun Sandbox <postmaster@sandbox7a9b01aeede542f98635a5fdfa9fbac1.mailgun.org>"
+    to: "Ss <xxxxxxx@krunsea.com>"
+    subject: "title {{data}}"
+    text: "Hello from notify. {{data2}}"
+
+rocketchat:
+  - notifyLevel: 2
+    notifyFormatter: ["{{data}}"]
+    webhook: "http://127.0.0.1:3000/hooks/62a6f649axxxxxxx/SdWX8fXKEs8xMBFxxxxxxx"
+    text: "Hello from notify. {{data}}"
+
+telegram:
+  - notifyLevel: 2
+    notifyFormatter: ["{{data}}"]
+    webhook: "https://api.telegram.org/bot516xxxxxxx/sendMessage"
+    chatId: "69xxxxxxx"
+    text: "Hello from notify. {{data}}"
+
+webhook:
+  - notifyLevel: 2
+    notifyFormatter: [ "{{data}}" ]
+    webhook: "https://httpbin.org/post"
+    params:
+      k1: "v1"
+      k2: "v2"
+    data:
+      k3: "v3"
+    json:
+      k4: "v4"
