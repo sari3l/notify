@@ -1,4 +1,4 @@
-package pushbullet
+package zulip
 
 import (
 	"fmt"
@@ -8,20 +8,23 @@ import (
 	"github.com/sari3l/requests/ext"
 )
 
-// 文档 https://docs.pushbullet.com/
-
-const DefaultWebhook = "https://api.pushbullet.com/v2/pushes"
+// 文档 https://zulip.com/api/send-message
 
 type Option struct {
 	types.BaseOption `yaml:",inline"`
-	Token            string `yaml:"token"`
+	Webhook          string `yaml:"webhook"`
+	BotEmail         string `yaml:"botEmail"`
+	BotKey           string `yaml:"botKey"`
 	MessageParams    `yaml:",inline"`
 }
 
 type MessageParams struct {
-	Type  string `yaml:"type" json:"type"`
-	Title string `yaml:"title,omitempty" json:"title,omitempty"`
-	Body  string `yaml:"body,omitempty" json:"body,omitempty"`
+	Type    string `yaml:"type" dict:"type"`
+	To      string `yaml:"to" dict:"to"`
+	Content string `yaml:"content" dict:"content"`
+	Topic   string `yaml:"topic,omitempty" dict:"topic,omitempty"`
+	QueueId string `yaml:"queueId,omitempty" dict:"queue_id,omitempty"`
+	LocalId string `yaml:"localId,omitempty" dict:"local_id,omitempty"`
 }
 
 type notifier struct {
@@ -37,9 +40,9 @@ func (opt *Option) ToNotifier() *notifier {
 func (n *notifier) format(messages []string) (string, ext.Ext, ext.Ext) {
 	formatMap := utils.GenerateMap(n.NotifyFormatter, messages)
 	utils.FormatAnyWithMap(&n.MessageParams, &formatMap)
-	headers := ext.Dict{"Access-Token": n.Token}
-	json := utils.StructToJson(n.MessageParams)
-	return DefaultWebhook, ext.Headers(headers), ext.Json(json)
+	data := utils.StructToDict(n.MessageParams)
+	auth := ext.BasicAuth{Username: n.BotEmail, Password: n.BotKey}
+	return n.Webhook, ext.Auth(auth), ext.Data(data)
 }
 
 func (n *notifier) Send(messages []string) error {
@@ -47,5 +50,5 @@ func (n *notifier) Send(messages []string) error {
 	if resp != nil && resp.Ok {
 		return nil
 	}
-	return fmt.Errorf("[PushBullet] [%v] %s", resp.StatusCode, resp.Content)
+	return fmt.Errorf("[ZuLip] [%v] %s", resp.StatusCode, resp.Content)
 }

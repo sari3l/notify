@@ -1,4 +1,4 @@
-package rocketchat
+package qpush
 
 import (
 	"fmt"
@@ -8,20 +8,19 @@ import (
 	"github.com/sari3l/requests/ext"
 )
 
-// 文档 https://docs.rocket.chat/guides/administration/admin-panel/integrations
+// 文档 http://qpush.me/zh_tw/
+
+const DefaultWebhook = "http://qpush.me/pusher/push_site/"
 
 type Option struct {
 	types.BaseOption `yaml:",inline"`
-	Webhook          string `yaml:"webhook"`
 	MessageParams    `yaml:",inline"`
 }
 
 type MessageParams struct {
-	Title     string `yaml:"title,omitempty" json:"title,omitempty"`
-	TitleLink string `yaml:"titleLink,omitempty" json:"title_link,omitempty"`
-	Text      string `yaml:"text,omitempty" json:"text,omitempty"`
-	ImageUrl  string `yaml:"imageUrl,omitempty" json:"image_url,omitempty"`
-	Color     string `yaml:"color,omitempty" json:"color,omitempty"`
+	Name string `yaml:"name" dict:"name"`
+	Code string `yaml:"code" dict:"code"`
+	Msg  string `yaml:"msg,omitempty" dict:"msg[text],omitempty"`
 }
 
 type notifier struct {
@@ -37,14 +36,16 @@ func (opt *Option) ToNotifier() *notifier {
 func (n *notifier) format(messages []string) (string, ext.Ext) {
 	formatMap := utils.GenerateMap(n.NotifyFormatter, messages)
 	utils.FormatAnyWithMap(&n.MessageParams, &formatMap)
-	data := utils.StructToJson(n.MessageParams)
-	return n.Webhook, ext.Json(data)
+	data := utils.StructToDict(n.MessageParams)
+	return DefaultWebhook, ext.Data(data)
 }
 
 func (n *notifier) Send(messages []string) error {
-	resp := requests.Post(n.format(messages))
+	url, data := n.format(messages)
+	resp := requests.Post(url, data, ext.Proxy("http://localhost:8080"))
+	//resp := requests.Post(n.format(messages))
 	if resp != nil && resp.Ok {
 		return nil
 	}
-	return fmt.Errorf("[RocketChat] [%v] %s", resp.StatusCode, resp.Content)
+	return fmt.Errorf("[QPush] [%v] %s", resp.StatusCode, resp.Content)
 }

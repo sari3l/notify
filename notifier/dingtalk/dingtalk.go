@@ -82,7 +82,7 @@ func (n *notifier) format(messages []string) (string, ext.Ext, ext.Ext) {
 	}
 	// 信息-类型处理
 	formatMap := utils.GenerateMap(n.NotifyFormatter, messages)
-	utils.FormatAnyWithMap(&n.MessageParams, formatMap)
+	utils.FormatAnyWithMap(&n.MessageParams, &formatMap)
 
 	data := map[string]interface{}{
 		"msgtype": n.MessageType,
@@ -95,7 +95,7 @@ func (n *notifier) format(messages []string) (string, ext.Ext, ext.Ext) {
 func (n *notifier) Send(messages []string) error {
 	resp := requests.Post(n.format(messages))
 	fmt.Print(resp.Content)
-	if resp.Ok && resp.Json().Get("errcode").Int() == 0 {
+	if resp != nil && resp.Ok && resp.Json().Get("errcode").Int() == 0 {
 		return nil
 	}
 	return fmt.Errorf("[Dingtalk] [%v] %s", resp.StatusCode, resp.Content)

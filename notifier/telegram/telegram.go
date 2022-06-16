@@ -33,14 +33,14 @@ func (opt *Option) ToNotifier() *notifier {
 
 func (n *notifier) format(messages []string) (string, ext.Ext) {
 	formatMap := utils.GenerateMap(n.NotifyFormatter, messages)
-	utils.FormatAnyWithMap(&n.MessageParams, formatMap)
+	utils.FormatAnyWithMap(&n.MessageParams, &formatMap)
 	params := utils.StructToDict(n.MessageParams)
 	return n.Webhook, ext.Params(params)
 }
 
 func (n *notifier) Send(messages []string) error {
 	resp := requests.Get(n.format(messages))
-	if resp.Ok && resp.Json().Get("ok").Bool() == true {
+	if resp != nil && resp.Ok && resp.Json().Get("ok").Bool() == true {
 		return nil
 	}
 	return fmt.Errorf("[Telegram] [%v] %s", resp.StatusCode, resp.Content)

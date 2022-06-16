@@ -42,14 +42,14 @@ func (opt *Option) ToNotifier() *notifier {
 
 func (n *notifier) format(messages []string) (string, ext.Ext) {
 	formatMap := utils.GenerateMap(n.NotifyFormatter, messages)
-	utils.FormatAnyWithMap(&n.MessageParams, formatMap)
+	utils.FormatAnyWithMap(&n.MessageParams, &formatMap)
 	data := utils.StructToDict(n.MessageParams)
 	return DefaultWebhook, ext.Data(data)
 }
 
 func (n *notifier) Send(messages []string) error {
 	resp := requests.Post(n.format(messages))
-	if resp.Ok {
+	if resp != nil && resp.Ok {
 		return nil
 	}
 	return fmt.Errorf("[PushOver] [%v] %s", resp.StatusCode, resp.Content)

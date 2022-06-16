@@ -1,4 +1,4 @@
-package discord
+package igot
 
 import (
 	"fmt"
@@ -8,7 +8,7 @@ import (
 	"github.com/sari3l/requests/ext"
 )
 
-// 文档 https://discord.com/developers/docs/resources/webhook#execute-webhook
+// 文档 http://hellyw.com/#/
 
 type Option struct {
 	types.BaseOption `yaml:",inline"`
@@ -17,10 +17,12 @@ type Option struct {
 }
 
 type MessageParams struct {
-	Content   string `yaml:"content,omitempty" json:"content,omitempty"`
-	Username  string `yaml:"username,omitempty" json:"username,omitempty"`
-	AvatarUrl string `yaml:"avatarUrl,omitempty" json:"avatarUrl,omitempty"`
-	Tts       bool   `yaml:"tts,omitempty" json:"tts,omitempty"`
+	Content           string `yaml:"content" json:"content"`
+	Title             string `yaml:"title,omitempty" json:"title,omitempty"`
+	Url               string `yaml:"url,omitempty" dict:"url,omitempty"`
+	Copy              string `yaml:"copy,omitempty" dict:"copy,omitempty"`
+	Urgent            *int   `yaml:"urgent,omitempty" dict:"urgent,omitempty"`
+	AutomaticallyCopy *int   `yaml:"automaticallyCopy,omitempty" json:"automaticallyCopy,omitempty"`
 }
 
 type notifier struct {
@@ -35,15 +37,15 @@ func (opt *Option) ToNotifier() *notifier {
 
 func (n *notifier) format(messages []string) (string, ext.Ext) {
 	formatMap := utils.GenerateMap(n.NotifyFormatter, messages)
-	utils.FormatAnyWithMap(&n.MessageParams, &formatMap)
+	utils.FormatAnyWithMap(&n.Webhook, &formatMap)
 	json := utils.StructToJson(n.MessageParams)
 	return n.Webhook, ext.Json(json)
 }
 
 func (n *notifier) Send(messages []string) error {
 	resp := requests.Post(n.format(messages))
-	if resp != nil && resp.StatusCode == 204 {
+	if resp != nil && resp.Ok && resp.Json().Get("ret").Int() == 0 {
 		return nil
 	}
-	return fmt.Errorf("[Discord] [%v] %s", resp.StatusCode, resp.Content)
+	return fmt.Errorf("[iGot] [%v] %s", resp.StatusCode, resp.Content)
 }

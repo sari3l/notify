@@ -2,6 +2,7 @@ package utils
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/sari3l/requests/ext"
 	"reflect"
 	"strconv"
@@ -67,12 +68,13 @@ func ValueToString(obj reflect.Value) string {
 	case reflect.Complex64, reflect.Complex128:
 		return strconv.FormatComplex(obj.Complex(), 'f', 0, 128)
 	case reflect.Slice, reflect.Array:
+		// 这里有些许问题，暂时勉强使用
 		tmp := make([]string, 0)
 		for i := 0; i < obj.Len(); i++ {
 			tmp = append(tmp, ValueToString(obj.Index(i)))
 		}
-		return strings.Join(tmp, ",")
-	case reflect.Ptr, reflect.UnsafePointer:
+		return fmt.Sprintf("[%v]", strings.Join(tmp, ","))
+	case reflect.Ptr, reflect.UnsafePointer, reflect.Interface:
 		if obj.IsNil() {
 			return ""
 		} else {

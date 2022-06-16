@@ -30,14 +30,14 @@ func (opt *Option) ToNotifier() *notifier {
 
 func (n *notifier) format(messages []string) (string, ext.Ext) {
 	formatMap := utils.GenerateMap(n.NotifyFormatter, messages)
-	utils.FormatAnyWithMap(&n.MessageParams, formatMap)
+	utils.FormatAnyWithMap(&n.MessageParams, &formatMap)
 	data := utils.StructToDict(n.MessageParams)
 	return n.Webhook, ext.Data(data)
 }
 
 func (n *notifier) Send(messages []string) error {
 	resp := requests.Post(n.format(messages))
-	if resp.Ok && resp.Json().Get("request-uid").Str != "" {
+	if resp != nil && resp.Ok && resp.Json().Get("request-uid").Str != "" {
 		return nil
 	}
 	return fmt.Errorf("[Chanify] [%v] %s", resp.StatusCode, resp.Content)

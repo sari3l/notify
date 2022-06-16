@@ -1,4 +1,4 @@
-package rocketchat
+package ftqq
 
 import (
 	"fmt"
@@ -8,7 +8,7 @@ import (
 	"github.com/sari3l/requests/ext"
 )
 
-// 文档 https://docs.rocket.chat/guides/administration/admin-panel/integrations
+// 文档 https://sct.ftqq.com/sendkey
 
 type Option struct {
 	types.BaseOption `yaml:",inline"`
@@ -17,11 +17,10 @@ type Option struct {
 }
 
 type MessageParams struct {
-	Title     string `yaml:"title,omitempty" json:"title,omitempty"`
-	TitleLink string `yaml:"titleLink,omitempty" json:"title_link,omitempty"`
-	Text      string `yaml:"text,omitempty" json:"text,omitempty"`
-	ImageUrl  string `yaml:"imageUrl,omitempty" json:"image_url,omitempty"`
-	Color     string `yaml:"color,omitempty" json:"color,omitempty"`
+	Title       string `yaml:"title" dict:"title"`
+	Description string `yaml:"desc,omitempty" dict:"desc,omitempty"`
+	Channel     string `yaml:"channel,omitempty" dict:"channel,omitempty"`
+	OpenId      string `yaml:"openId,omitempty" dict:"openId,omitempty"`
 }
 
 type notifier struct {
@@ -37,8 +36,8 @@ func (opt *Option) ToNotifier() *notifier {
 func (n *notifier) format(messages []string) (string, ext.Ext) {
 	formatMap := utils.GenerateMap(n.NotifyFormatter, messages)
 	utils.FormatAnyWithMap(&n.MessageParams, &formatMap)
-	data := utils.StructToJson(n.MessageParams)
-	return n.Webhook, ext.Json(data)
+	data := utils.StructToDict(n.MessageParams)
+	return n.Webhook, ext.Data(data)
 }
 
 func (n *notifier) Send(messages []string) error {
@@ -46,5 +45,5 @@ func (n *notifier) Send(messages []string) error {
 	if resp != nil && resp.Ok {
 		return nil
 	}
-	return fmt.Errorf("[RocketChat] [%v] %s", resp.StatusCode, resp.Content)
+	return fmt.Errorf("[FTQQ] [%v] %s", resp.StatusCode, resp.Content)
 }

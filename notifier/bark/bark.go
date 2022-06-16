@@ -38,14 +38,14 @@ func (opt *Option) ToNotifier() *notifier {
 
 func (n *notifier) format(messages []string) (string, ext.Ext) {
 	formatMap := utils.GenerateMap(n.NotifyFormatter, messages)
-	utils.FormatAnyWithMap(&n.Webhook, formatMap)
+	utils.FormatAnyWithMap(&n.Webhook, &formatMap)
 	params := utils.StructToDict(n.MessageParams)
 	return n.Webhook, ext.Params(params)
 }
 
 func (n *notifier) Send(messages []string) error {
 	resp := requests.Get(n.format(messages))
-	if resp.Ok {
+	if resp != nil && resp.Ok {
 		return nil
 	}
 	return fmt.Errorf("[Bark] [%v] %s", resp.StatusCode, resp.Content)
