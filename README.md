@@ -3,6 +3,7 @@
 [![license](https://img.shields.io/github/license/sari3l/notify?style=flat-square)](https://github.com/sari3l/notify/LIENCES)
 [![Go Report Card](https://goreportcard.com/badge/github.com/sari3l/notify)](https://goreportcard.com/report/github.com/sari3l/notify)
 [![CodeFactor](https://www.codefactor.io/repository/github/sari3l/notify/badge)](https://www.codefactor.io/repository/github/sari3l/notify)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fsari3l%2Fnotify.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fsari3l%2Fnotify?ref=badge_shield)
 
 ## Usage
 
@@ -38,3 +39,5 @@ go install -v github.com/sari3l/notify/cmd/notify@latest
 ## Licenses
 
 [GPL v3.0](https://github.com/sari3l/nofity/blob/main/LICENSE)
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fsari3l%2Fnotify.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fsari3l%2Fnotify?ref=badge_large)
