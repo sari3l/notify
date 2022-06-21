@@ -1,4 +1,4 @@
-package mailgun
+package zulip
 
 import (
 	"fmt"
@@ -11,15 +11,18 @@ import (
 type Option struct {
 	types.BaseOption `yaml:",inline"`
 	Webhook          string `yaml:"webhook"`
-	ApiKey           string `yaml:"apiKey"`
+	BotEmail         string `yaml:"botEmail"`
+	BotKey           string `yaml:"botKey"`
 	MessageParams    `yaml:",inline"`
 }
 
 type MessageParams struct {
-	From    string `yaml:"from" dict:"from"`
-	To      string `yaml:"to" dict:"to"`
-	Subject string `yaml:"subject" dict:"subject"`
-	Text    string `yaml:"text" dict:"text"`
+	Type    string  `yaml:"type" dict:"type"`
+	To      string  `yaml:"to" dict:"to"`
+	Content string  `yaml:"content" dict:"content"`
+	Topic   *string `yaml:"topic,omitempty" dict:"topic,omitempty"`
+	QueueId *string `yaml:"queueId,omitempty" dict:"queue_id,omitempty"`
+	LocalId *string `yaml:"localId,omitempty" dict:"local_id,omitempty"`
 }
 
 type notifier struct {
@@ -36,7 +39,7 @@ func (n *notifier) format(messages []string) (string, ext.Ext, ext.Ext) {
 	formatMap := utils.GenerateMap(n.NotifyFormatter, messages)
 	utils.FormatAnyWithMap(&n.MessageParams, &formatMap)
 	data := utils.StructToDict(n.MessageParams)
-	auth := ext.BasicAuth{Username: "api", Password: n.ApiKey}
+	auth := ext.BasicAuth{Username: n.BotEmail, Password: n.BotKey}
 	return n.Webhook, ext.Auth(auth), ext.Data(data)
 }
 
@@ -45,5 +48,5 @@ func (n *notifier) Send(messages []string) error {
 	if resp != nil && resp.Ok {
 		return nil
 	}
-	return fmt.Errorf("[Mailgun] [%v] %s", resp.StatusCode, resp.Content)
+	return fmt.Errorf("[ZuLip] [%v] %s", resp.StatusCode, resp.Content)
 }

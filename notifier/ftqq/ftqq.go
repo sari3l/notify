@@ -1,4 +1,4 @@
-package googlechat
+package ftqq
 
 import (
 	"fmt"
@@ -15,7 +15,10 @@ type Option struct {
 }
 
 type MessageParams struct {
-	Text string `yaml:"text" json:"text"`
+	Title       string  `yaml:"title" dict:"title"`
+	Description *string `yaml:"desc,omitempty" dict:"desc,omitempty"`
+	Channel     *string `yaml:"channel,omitempty" dict:"channel,omitempty"`
+	OpenId      *string `yaml:"openId,omitempty" dict:"openId,omitempty"`
 }
 
 type notifier struct {
@@ -31,8 +34,8 @@ func (opt *Option) ToNotifier() *notifier {
 func (n *notifier) format(messages []string) (string, ext.Ext) {
 	formatMap := utils.GenerateMap(n.NotifyFormatter, messages)
 	utils.FormatAnyWithMap(&n.MessageParams, &formatMap)
-	data := utils.StructToJson(n.MessageParams)
-	return n.Webhook, ext.Json(data)
+	data := utils.StructToDict(n.MessageParams)
+	return n.Webhook, ext.Data(data)
 }
 
 func (n *notifier) Send(messages []string) error {
@@ -40,5 +43,5 @@ func (n *notifier) Send(messages []string) error {
 	if resp != nil && resp.Ok {
 		return nil
 	}
-	return fmt.Errorf("[GoogleChat] [%v] %s", resp.StatusCode, resp.Content)
+	return fmt.Errorf("[FTQQ] [%v] %s", resp.StatusCode, resp.Content)
 }

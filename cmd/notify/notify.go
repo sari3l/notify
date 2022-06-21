@@ -1,29 +1,30 @@
 package main
 
 import (
-	"flag"
+	"bufio"
 	"github.com/jessevdk/go-flags"
 	"github.com/sari3l/notify/internal"
 	"github.com/sari3l/notify/types"
-	"golang.org/x/crypto/ssh/terminal"
-	"io/ioutil"
 	"os"
-	"strings"
 )
 
 func main() {
-	input := flag.Args()
-	if !terminal.IsTerminal(0) {
-		b, err := ioutil.ReadAll(os.Stdin)
-		if err == nil {
-			input = append(input, string(b))
-		}
+	data := new([]string)
+
+	scanner := bufio.NewScanner(os.Stdin)
+	scanner.Split(bufio.ScanWords)
+	for scanner.Scan() {
+		*data = append(*data, scanner.Text())
 	}
-	data := strings.Join(input, " ")
 
 	opt := new(types.Option)
-	if _, err := flags.Parse(opt); err != nil {
+	args, err := flags.Parse(opt)
+	if err != nil {
 		return
+	}
+
+	if len(args) != 0 {
+		*data = append(*data, args...)
 	}
 
 	run := internal.InitRunner(opt)
@@ -31,5 +32,5 @@ func main() {
 		return
 	}
 	internal.Parse(run, opt)
-	run.Run([]string{data})
+	run.Run(data)
 }

@@ -9,42 +9,37 @@ import (
 	"time"
 )
 
-// 文档 https://open.dingtalk.com/document/robots/custom-robot-access
-
 const DefaultServer = "https://oapi.dingtalk.com/robot/send"
 const DefaultMessageType = "text"
 
 type AtOption struct {
-	AtMobiles []string `yaml:"atMobiles,omitempty" json:"atMobiles"`
-	AtUserIds []string `yaml:"atUserIds,omitempty" json:"atUserIds"`
-	IsAtAll   bool     `yaml:"isAtAll,omitempty" json:"isAtAll"`
+	AtMobiles *[]string `yaml:"atMobiles,omitempty" json:"atMobiles,omitempty"`
+	AtUserIds *[]string `yaml:"atUserIds,omitempty" json:"atUserIds,omitempty"`
+	IsAtAll   *bool     `yaml:"isAtAll,omitempty" json:"isAtAll,omitempty"`
 }
 
-// 独立 action card
-// feed card
-
 type BtnOption struct {
-	Title     string `yaml:"title,omitempty" json:"title"`
-	ActionURL string `yaml:"actionURL,omitempty" json:"actionURL"`
+	Title     *string `yaml:"title,omitempty" json:"title,omitempty"`
+	ActionURL *string `yaml:"actionURL,omitempty" json:"actionURL,omitempty"`
 }
 
 type LinkOption struct {
-	Title      string `yaml:"title,omitempty" json:"title"`
-	MessageURL string `yaml:"messageURL,omitempty" json:"messageURL"`
-	PicURL     string `yaml:"picURL,omitempty" json:"picURL"`
+	Title      *string `yaml:"title,omitempty" json:"title,omitempty"`
+	MessageURL *string `yaml:"messageURL,omitempty" json:"messageURL,omitempty"`
+	PicURL     *string `yaml:"picURL,omitempty" json:"picURL,omitempty"`
 }
 
 type MessageParams struct {
-	Text           string       `yaml:"text,omitempty" json:"text"`                     // Markdown | Link | ActionCard
-	Title          string       `yaml:"title,omitempty" json:"title"`                   // Markdown | Link | ActionCard
-	SingleTitle    string       `yaml:"singleTitle,omitempty" json:"singleTitle"`       // Markdown | Link | ActionCard
-	SingleUrl      string       `yaml:"singleUrl,omitempty" json:"singleUrl"`           // ActionCard
-	BtnOrientation string       `yaml:"btnOrientation,omitempty" json:"btnOrientation"` // ActionCard
-	Content        string       `yaml:"content,omitempty" json:"content"`               // Text
-	PicUrl         string       `yaml:"picUrl,omitempty" json:"picUrl"`                 // Link
-	MessageUrl     string       `yaml:"messageUrl,omitempty" json:"messageUrl"`         // Link
-	Btns           []BtnOption  `yaml:"btns,omitempty" json:"btns"`                     // ActionCard
-	Links          []LinkOption `yaml:"links,omitempty" json:"links"`                   // FeedCard
+	Text           *string           `yaml:"text,omitempty" json:"text,omitempty"`                     // Markdown | Link | ActionCard
+	Title          *string           `yaml:"title,omitempty" json:"title,omitempty"`                   // Markdown | Link | ActionCard
+	SingleTitle    *string           `yaml:"singleTitle,omitempty" json:"singleTitle,omitempty"`       // Markdown | Link | ActionCard
+	SingleUrl      *string           `yaml:"singleUrl,omitempty" json:"singleUr,omitemptyl"`           // ActionCard
+	BtnOrientation *string           `yaml:"btnOrientation,omitempty" json:"btnOrientation,omitempty"` // ActionCard
+	Content        *string           `yaml:"content,omitempty" json:"content,omitempty"`               // Text
+	PicUrl         *string           `yaml:"picUrl,omitempty" json:"picUrl,omitempty"`                 // Link
+	MessageUrl     *string           `yaml:"messageUrl,omitempty" json:"messageUrl,omitempty"`         // Link
+	Btns           *[]map[string]any `yaml:"btns,omitempty" json:"btns,omitempty"`                     // ActionCard
+	Links          *[]map[string]any `yaml:"links,omitempty" json:"links,omitempty"`                   // FeedCard
 }
 
 type Option struct {
@@ -82,7 +77,7 @@ func (n *notifier) format(messages []string) (string, ext.Ext, ext.Ext) {
 	}
 	// 信息-类型处理
 	formatMap := utils.GenerateMap(n.NotifyFormatter, messages)
-	utils.FormatAnyWithMap(&n.MessageParams, formatMap)
+	utils.FormatAnyWithMap(&n.MessageParams, &formatMap)
 
 	data := map[string]interface{}{
 		"msgtype": n.MessageType,
@@ -94,8 +89,7 @@ func (n *notifier) format(messages []string) (string, ext.Ext, ext.Ext) {
 
 func (n *notifier) Send(messages []string) error {
 	resp := requests.Post(n.format(messages))
-	fmt.Print(resp.Content)
-	if resp.Ok && resp.Json().Get("errcode").Int() == 0 {
+	if resp != nil && resp.Ok && resp.Json().Get("errcode").Int() == 0 {
 		return nil
 	}
 	return fmt.Errorf("[Dingtalk] [%v] %s", resp.StatusCode, resp.Content)

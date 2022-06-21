@@ -1,4 +1,4 @@
-package googlechat
+package igot
 
 import (
 	"fmt"
@@ -15,7 +15,10 @@ type Option struct {
 }
 
 type MessageParams struct {
-	Text string `yaml:"text" json:"text"`
+	Content string          `yaml:"content" json:"content"`
+	Title   *string         `yaml:"title,omitempty" json:"title,omitempty"`
+	Url     *string         `yaml:"url,omitempty" json:"url,omitempty"`
+	Detail  *map[string]any `yaml:"detail,omitempty" json:"detail,omitempty"`
 }
 
 type notifier struct {
@@ -30,15 +33,15 @@ func (opt *Option) ToNotifier() *notifier {
 
 func (n *notifier) format(messages []string) (string, ext.Ext) {
 	formatMap := utils.GenerateMap(n.NotifyFormatter, messages)
-	utils.FormatAnyWithMap(&n.MessageParams, &formatMap)
-	data := utils.StructToJson(n.MessageParams)
-	return n.Webhook, ext.Json(data)
+	utils.FormatAnyWithMap(&n.Webhook, &formatMap)
+	json := utils.StructToJson(n.MessageParams)
+	return n.Webhook, ext.Json(json)
 }
 
 func (n *notifier) Send(messages []string) error {
 	resp := requests.Post(n.format(messages))
-	if resp != nil && resp.Ok {
+	if resp != nil && resp.Ok && resp.Json().Get("ret").Int() == 0 {
 		return nil
 	}
-	return fmt.Errorf("[GoogleChat] [%v] %s", resp.StatusCode, resp.Content)
+	return fmt.Errorf("[iGot] [%v] %s", resp.StatusCode, resp.Content)
 }

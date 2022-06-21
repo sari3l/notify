@@ -3,6 +3,7 @@
 [![license](https://img.shields.io/github/license/sari3l/notify?style=flat-square)](https://github.com/sari3l/notify/LIENCES)
 [![Go Report Card](https://goreportcard.com/badge/github.com/sari3l/notify)](https://goreportcard.com/report/github.com/sari3l/notify)
 [![CodeFactor](https://www.codefactor.io/repository/github/sari3l/notify/badge)](https://www.codefactor.io/repository/github/sari3l/notify)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fsari3l%2Fnotify.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fsari3l%2Fnotify?ref=badge_shield)
 
 ## Usage
 
@@ -24,17 +25,30 @@ Help Options:
   -h, --help        Show this help message
 ```
 
-## Installation
+## 安装
 
 ```shell
 go install -v github.com/sari3l/notify/cmd/notify@latest
 ```
 
-## Features
+## 配置
 
--  管道符输入
--  指定id、level、模块，或最低level广播
+1. 配置文件默认路径`$HOME/.config/notify-config.yaml`，或通过`-c|--config`指定
+2. 具体每个推送配置、样例见相关路径下 README.md
+
+## 支持
+
+- 多参输入
+  - `echo -e "part1\npart2" | notify -n bark`
+  - `notify part1 part22 -n bark`
+- 指定id、level、模块，或最低level广播
+
+## 计划
+
+- slack | sendgrid 接口
 
 ## Licenses
 
 [GPL v3.0](https://github.com/sari3l/nofity/blob/main/LICENSE)
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fsari3l%2Fnotify.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fsari3l%2Fnotify?ref=badge_large)

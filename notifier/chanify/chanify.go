@@ -15,7 +15,16 @@ type Option struct {
 }
 
 type MessageParams struct {
-	Text string `yaml:"text,omitempty" dict:"text"`
+	Text              *string              `yaml:"text,omitempty" json:"text,omitempty"`
+	Title             *string              `yaml:"title,omitempty" json:"title,omitempty"`
+	Copy              *string              `yaml:"copy,omitempty" json:"copy,omitempty"`
+	AutoCopy          *int                 `yaml:"autoCopy,omitempty" json:"autocopy,omitempty"`
+	Sound             *int                 `yaml:"sound,omitempty" json:"sound,omitempty"`
+	Priority          *int                 `yaml:"priority,omitempty" json:"priority,omitempty"`
+	InterruptionLevel *string              `yaml:"interruptionLevel,omitempty" json:"interruptionlevel,omitempty"`
+	Actions           *map[string][]string `yaml:"actions,omitempty" json:"actions,omitempty"`
+	Timeline          *map[string]any      `yaml:"timeline,omitempty" json:"timeline,omitempty"`
+	Link              *string              `yaml:"link,omitempty" json:"link,omitempty"`
 }
 
 type notifier struct {
@@ -30,14 +39,14 @@ func (opt *Option) ToNotifier() *notifier {
 
 func (n *notifier) format(messages []string) (string, ext.Ext) {
 	formatMap := utils.GenerateMap(n.NotifyFormatter, messages)
-	utils.FormatAnyWithMap(&n.MessageParams, formatMap)
-	data := utils.StructToDict(n.MessageParams)
-	return n.Webhook, ext.Data(data)
+	utils.FormatAnyWithMap(&n.MessageParams, &formatMap)
+	json := utils.StructToJson(n.MessageParams)
+	return n.Webhook, ext.Json(json)
 }
 
 func (n *notifier) Send(messages []string) error {
 	resp := requests.Post(n.format(messages))
-	if resp.Ok && resp.Json().Get("request-uid").Str != "" {
+	if resp != nil && resp.Ok && resp.Json().Get("request-uid").Str != "" {
 		return nil
 	}
 	return fmt.Errorf("[Chanify] [%v] %s", resp.StatusCode, resp.Content)

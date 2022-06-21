@@ -30,10 +30,10 @@ func (opt *Option) ToNotifier() *notifier {
 func (n *notifier) format(messages []string) (string, ext.Dict, ext.Dict, map[string]any) {
 	formatMap := utils.GenerateMap(n.NotifyFormatter, messages)
 	// webhook url 需要考虑要不要加一个urlencode
-	utils.FormatAnyWithMap(&n.Webhook, formatMap)
-	utils.FormatAnyWithMap(&n.Params, formatMap)
-	utils.FormatAnyWithMap(&n.Data, formatMap)
-	utils.FormatAnyWithMap(&n.Json, formatMap)
+	utils.FormatAnyWithMap(&n.Webhook, &formatMap)
+	utils.FormatAnyWithMap(&n.Params, &formatMap)
+	utils.FormatAnyWithMap(&n.Data, &formatMap)
+	utils.FormatAnyWithMap(&n.Json, &formatMap)
 	return n.Webhook, n.Params, n.Data, n.Json
 }
 

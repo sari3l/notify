@@ -73,13 +73,13 @@ func (runner *Runner) registerNoticer(noticers ...*types.Notifier) {
 	}
 }
 
-func (runner *Runner) Run(data []string) {
+func (runner *Runner) Run(data *[]string) {
 	var wg sync.WaitGroup
 	wg.Add(len(runner.Noticers))
 	for _, v := range runner.Noticers {
 		noticer := *v
 		go func() {
-			err := noticer.Send(data)
+			err := noticer.Send(*data)
 			if err != nil {
 				log.Fatal(err)
 			}
