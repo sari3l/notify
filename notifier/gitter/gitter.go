@@ -1,4 +1,4 @@
-package slack
+package gitter
 
 import (
 	"fmt"
@@ -11,6 +11,7 @@ import (
 type Option struct {
 	types.BaseOption `yaml:",inline"`
 	Webhook          string `yaml:"webhook"`
+	Token            string `yaml:"token"`
 	MessageParams    `yaml:",inline"`
 }
 
@@ -28,17 +29,18 @@ func (opt *Option) ToNotifier() *notifier {
 	return noticer
 }
 
-func (n *notifier) format(messages []string) (string, ext.Ext) {
+func (n *notifier) format(messages []string) (string, ext.Ext, ext.Ext) {
 	formatMap := utils.GenerateMap(n.NotifyFormatter, messages)
 	utils.FormatAnyWithMap(&n.MessageParams, &formatMap)
+	auth := ext.BearerAuth{Token: n.Token}
 	json := utils.StructToJson(n.MessageParams)
-	return n.Webhook, ext.Json(json)
+	return n.Webhook, ext.Auth(auth), ext.Json(json)
 }
 
 func (n *notifier) Send(messages []string) error {
 	resp := requests.Post(n.format(messages))
-	if resp != nil && resp.Content == "ok" {
+	if resp != nil && resp.Json().Get("error").Str == "" {
 		return nil
 	}
-	return fmt.Errorf("[Slack] [%v] %s", resp.StatusCode, resp.Content)
+	return fmt.Errorf("[Gitter] [%v] %s", resp.StatusCode, resp.Content)
 }

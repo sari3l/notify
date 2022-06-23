@@ -11,10 +11,13 @@ import (
 func main() {
 	data := new([]string)
 
-	scanner := bufio.NewScanner(os.Stdin)
-	scanner.Split(bufio.ScanWords)
-	for scanner.Scan() {
-		*data = append(*data, scanner.Text())
+	stat, _ := os.Stdin.Stat()
+	if (stat.Mode() & os.ModeCharDevice) == 0 {
+		scanner := bufio.NewScanner(os.Stdin)
+		scanner.Split(bufio.ScanWords)
+		for scanner.Scan() {
+			*data = append(*data, scanner.Text())
+		}
 	}
 
 	opt := new(types.Option)

@@ -43,10 +43,6 @@ go install -v github.com/sari3l/notify/cmd/notify@latest
   - `notify part1 part22 -n bark`
 - 指定id、level、模块，或最低level广播
 
-## 计划
-
-- slack | sendgrid 接口
-
 ## Licenses
 
 [GPL v3.0](https://github.com/sari3l/nofity/blob/main/LICENSE)
