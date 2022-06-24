@@ -16,13 +16,18 @@ func Parse(runner *Runner, opt *types.Option) {
 	// -s --show
 	if opt.Show {
 		var content string
-		content += fmt.Sprintf("%-4s\t%-5s\t%-15s\t%s\n", "ID", "Level", "Type", "Description")
+		content += fmt.Sprintf("%-4s\t%-5s\t%-15s\t%-20s\t%s\n", "ID", "Level", "Type", "Formatter", "Description")
 		for i := 0; i < len(runner.Client.IdMap); i++ {
 			option := reflect.ValueOf(*runner.Client.IdMap[i]).Elem().FieldByName("Option")
 			level := option.Elem().FieldByName("NotifyLevel").Int()
+			formatterField := option.Elem().FieldByName("NotifyFormatter")
+			formatterSlice := make([]string, 0)
+			for i := 0; i < formatterField.Len(); i++ {
+				formatterSlice = append(formatterSlice, formatterField.Index(i).String())
+			}
 			description := option.Elem().FieldByName("BaseOption").FieldByName("NotifyDescription").String()
 			path := strings.Split(reflect.TypeOf(option.Interface()).Elem().PkgPath(), "/")
-			content += fmt.Sprintf("[%2d]\t[%3d]\t%-15s\t%+v \n", i, level, path[len(path)-1], description)
+			content += fmt.Sprintf("[%2d]\t[%3d]\t%-15s\t%-20v\t%+v \n", i, level, path[len(path)-1], strings.Join(formatterSlice, ","), description)
 		}
 		utils.OutputString(content)
 	}

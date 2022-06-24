@@ -36,6 +36,14 @@ go install -v github.com/sari3l/notify/cmd/notify@latest
 1. 配置文件默认路径`$HOME/.config/notify-config.yaml`，或通过`-c|--config`指定
 2. 具体每个推送配置、样例见相关路径下 README.md
 
+### 基本设置
+
+每个配置内容下均可以设置三个参数，均可在`-s`中可见
+
+- notifyLevel 指定当前配置等级，默认`0`
+- notifyFormatter 指定当前配置内容占位符，默认`[]`
+- notifyDescription 当前配置内容描述内容，默认`""`
+
 ## 支持
 
 - 多参输入

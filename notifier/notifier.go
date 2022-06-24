@@ -16,6 +16,7 @@ import (
 	"github.com/sari3l/notify/notifier/pushover"
 	"github.com/sari3l/notify/notifier/qpush"
 	"github.com/sari3l/notify/notifier/rocketchat"
+	"github.com/sari3l/notify/notifier/showdoc"
 	"github.com/sari3l/notify/notifier/slack"
 	"github.com/sari3l/notify/notifier/telegram"
 	"github.com/sari3l/notify/notifier/webhook"
@@ -40,6 +41,7 @@ type NotifiesPackage struct {
 	QPush      []*qpush.Option      `yaml:"qpush,omitempty"`
 	RocketChat []*rocketchat.Option `yaml:"rocketchat,omitempty"`
 	Slack      []*slack.Option      `yaml:"slack,omitempty"`
+	ShowDoc    []*showdoc.Option    `yaml:"showdoc,omitempty"`
 	Telegram   []*telegram.Option   `yaml:"telegram,omitempty"`
 	XZ         []*xz.Option         `yaml:"xz,omitempty"`
 	Webhook    []*webhook.Option    `yaml:"webhook,omitempty"`
@@ -48,5 +50,4 @@ type NotifiesPackage struct {
 	// 计划中
 	// Sendgraid  []*sendgraid.Option  `yaml:"sendgraid,omitempty"`
 	// Mattermost []*mattermost.Option `yaml:"mattermost,omitempty" //https://api.mattermost.com/
-	// NowPush []*nowpush.Option `yaml:"nowpush,omitempty"` //https://www.web.nowpush.app/
 }
