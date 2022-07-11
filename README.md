@@ -14,7 +14,7 @@ Usage:
 
 Application Options:
   -s, --show        显示配置信息
-  -c, --config=     指定配置文件, 如: $HOME/.config/notify-config.yaml
+  -c, --config=     指定配置文件 (default: $HOME/.config/notify-config.yaml)
   -i, --id=         指定通知id
   -l, --level=      指定通告等级 (default: 0)
   -a, --aboveLevel= 指定最低通告等级
