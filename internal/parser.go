@@ -11,7 +11,11 @@ import (
 func Parse(runner *Runner, opt *types.Option) {
 	// -v --version
 	if opt.Version {
-		utils.OutputString(types.VersionInfo)
+		utils.OutputString(utils.VersionInfo)
+	}
+	// -m model
+	if opt.Mode != nil {
+		utils.RunMode = *opt.Mode
 	}
 	// -s --show
 	if opt.Show {

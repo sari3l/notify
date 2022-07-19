@@ -41,7 +41,7 @@ func (n *notifier) format(messages []string) (string, ext.Ext) {
 func (n *notifier) Send(messages []string) error {
 	resp := requests.Post(n.format(messages))
 	if resp != nil && resp.Ok {
-		return nil
+		return utils.InfoCallBack(resp, nil)
 	}
-	return fmt.Errorf("[FTQQ] [%v] %s", resp.StatusCode, resp.Content)
+	return utils.InfoCallBack(resp, fmt.Errorf("[FTQQ] [%v] %s", resp.StatusCode, resp.Content))
 }

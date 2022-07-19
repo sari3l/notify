@@ -41,7 +41,7 @@ func (n *notifier) format(messages []string) (string, ext.Ext) {
 func (n *notifier) Send(messages []string) error {
 	resp := requests.Post(n.format(messages))
 	if resp != nil && resp.Ok && resp.Json().Get("ret").Int() == 0 {
-		return nil
+		return utils.InfoCallBack(resp, nil)
 	}
-	return fmt.Errorf("[iGot] [%v] %s", resp.StatusCode, resp.Content)
+	return utils.InfoCallBack(resp, fmt.Errorf("[iGot] [%v] %s", resp.StatusCode, resp.Content))
 }

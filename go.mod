@@ -5,7 +5,6 @@ go 1.18
 require (
 	github.com/jessevdk/go-flags v1.5.0
 	github.com/sari3l/requests v1.1.3
-	golang.org/x/crypto v0.0.0-20201016220609-9e8e0b390897
 	gopkg.in/yaml.v2 v2.4.0
 )
 

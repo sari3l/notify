@@ -43,10 +43,10 @@ func (n *notifier) Send(messages []string) error {
 	_, prep := requests.PrepareRequest(n.Method, url, params, nil, nil, data, json, nil, nil, nil, nil)
 	resp := session.Send(prep)
 	if resp != nil && resp.Ok {
-		return nil
+		return utils.InfoCallBack(resp, nil)
 	}
 	if resp == nil {
-		return fmt.Errorf("[Custom] connection refused\n")
+		return utils.InfoCallBack(resp, fmt.Errorf("[Custom] connection refused\n"))
 	}
-	return fmt.Errorf("[Custom] [%v] %s", resp.StatusCode, resp.Content)
+	return utils.InfoCallBack(resp, fmt.Errorf("[Custom] [%v] %s", resp.StatusCode, resp.Content))
 }

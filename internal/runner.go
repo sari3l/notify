@@ -36,7 +36,7 @@ func InitRunner(opt *types.Option) *Runner {
 			fmt.Print(err)
 			return nil
 		}
-		opt.Config = path.Join(home, types.DefaultConfigFilePath)
+		opt.Config = path.Join(home, utils.DefaultConfigFilePath)
 	}
 
 	if err := utils.ReadFromYaml(opt.Config, pro); err != nil {
