@@ -27,7 +27,7 @@
 | Btns           | *[]map[string]any | btns           | btns           | ✔      |
 | Links          | *[]map[string]any | links          | links          | ✔      |
 
-备注：在telegram中提供了`Btns | Links`对应结构体`方便转化，但是过于繁琐的键值设置不切合通知功能，所以均简化为`*map[string]any`，需要请自行转换
+备注：在telegram中提供了`Btns | Links`对应结构体方便转化，但是过于繁琐的键值设置不切合通知功能，所以均简化为`*map[string]any`，需要请自行转换
 
 ## 调用
 ### yaml

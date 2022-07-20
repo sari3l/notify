@@ -34,7 +34,7 @@ ftqq:
 ### api
 
 ```go
-desc := "Hello from notify""
+desc := "Hello from notify"
 opt := ftqq.Option{Webhook: "https://sctapi.ftqq.com/SCT140140Txxxxxxx.send"}
 opt.Title = "demo"
 opt.Description = &desc
