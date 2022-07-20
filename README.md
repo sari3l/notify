@@ -19,6 +19,7 @@ Application Options:
   -l, --level=      指定通告等级 (default: 0)
   -a, --aboveLevel= 指定最低通告等级
   -n, --noticer=    指定通知模块
+  -m, --model=      指定运行模式 (default: 0)
   -v, --version     版本信息
 
 Help Options:
