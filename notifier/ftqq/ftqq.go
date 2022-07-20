@@ -16,7 +16,7 @@ type Option struct {
 
 type MessageParams struct {
 	Title       string  `yaml:"title" dict:"title"`
-	Description *string `yaml:"desc,omitempty" dict:"desc,omitempty"`
+	Description *string `yaml:"desp,omitempty" dict:"desp,omitempty"`
 	Channel     *string `yaml:"channel,omitempty" dict:"channel,omitempty"`
 	OpenId      *string `yaml:"openId,omitempty" dict:"openId,omitempty"`
 }

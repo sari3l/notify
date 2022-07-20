@@ -15,7 +15,7 @@
 | 参数配置        | 类型      | ftqq    | yaml读取  | yaml可选 |
 |-------------|---------|---------|---------|--------|
 | Title       | string  | title   | title   |        |
-| Description | *string | desc    | desc    | ✔      |
+| Description | *string | desp    | desp    | ✔      |
 | Channel     | *string | channel | channel | ✔      |
 | OpenId      | *string | openId  | openId  | ✔      |
 
@@ -34,10 +34,10 @@ ftqq:
 ### api
 
 ```go
-desc := "Hello from notify""
+desp := "Hello from notify""
 opt := ftqq.Option{Webhook: "https://sctapi.ftqq.com/SCT140140Txxxxxxx.send"}
 opt.Title = "demo"
-opt.Description = &desc
+opt.Description = &desp
 err := opt.ToNotifier().Send(nil)
 if err != nil {
     fmt.Println(err)
