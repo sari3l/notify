@@ -6,6 +6,7 @@ import (
 	"github.com/sari3l/notify/utils"
 	"github.com/sari3l/requests"
 	"github.com/sari3l/requests/ext"
+	rTypes "github.com/sari3l/requests/types"
 	"time"
 )
 
@@ -61,11 +62,11 @@ func (opt *Option) ToNotifier() *notifier {
 	return noticer
 }
 
-func (n *notifier) format(messages []string) (string, ext.Ext, ext.Ext) {
+func (n *notifier) format(messages []string) (string, rTypes.Ext, rTypes.Ext) {
 	if n.MessageType == "" {
 		n.MessageType = DefaultMessageType
 	}
-	params := ext.Dict{
+	params := rTypes.Dict{
 		"access_token": n.Token,
 	}
 	// 安全-加签处理

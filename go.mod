@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/jessevdk/go-flags v1.5.0
-	github.com/sari3l/requests v1.1.3
+	github.com/sari3l/requests v1.1.6
 	gopkg.in/yaml.v2 v2.4.0
 )
 

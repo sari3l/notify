@@ -5,7 +5,7 @@ import (
 	"github.com/sari3l/notify/types"
 	"github.com/sari3l/notify/utils"
 	"github.com/sari3l/requests"
-	"github.com/sari3l/requests/ext"
+	rTypes "github.com/sari3l/requests/types"
 )
 
 type Option struct {
@@ -27,7 +27,7 @@ func (opt *Option) ToNotifier() *notifier {
 	return noticer
 }
 
-func (n *notifier) format(messages []string) (string, ext.Dict, ext.Dict, map[string]any) {
+func (n *notifier) format(messages []string) (string, rTypes.Dict, rTypes.Dict, map[string]any) {
 	formatMap := utils.GenerateMap(n.NotifyFormatter, messages)
 	// webhook url 需要考虑要不要加一个urlencode
 	utils.FormatAnyWithMap(&n.Webhook, &formatMap)

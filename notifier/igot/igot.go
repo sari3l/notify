@@ -6,6 +6,7 @@ import (
 	"github.com/sari3l/notify/utils"
 	"github.com/sari3l/requests"
 	"github.com/sari3l/requests/ext"
+	rTypes "github.com/sari3l/requests/types"
 )
 
 type Option struct {
@@ -31,7 +32,7 @@ func (opt *Option) ToNotifier() *notifier {
 	return noticer
 }
 
-func (n *notifier) format(messages []string) (string, ext.Ext) {
+func (n *notifier) format(messages []string) (string, rTypes.Ext) {
 	formatMap := utils.GenerateMap(n.NotifyFormatter, messages)
 	utils.FormatAnyWithMap(&n.Webhook, &formatMap)
 	json := utils.StructToJson(n.MessageParams)
