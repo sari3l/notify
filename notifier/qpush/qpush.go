@@ -6,6 +6,7 @@ import (
 	"github.com/sari3l/notify/utils"
 	"github.com/sari3l/requests"
 	"github.com/sari3l/requests/ext"
+	rTypes "github.com/sari3l/requests/types"
 )
 
 const DefaultWebhook = "http://qpush.me/pusher/push_site/"
@@ -31,11 +32,11 @@ func (opt *Option) ToNotifier() *notifier {
 	return noticer
 }
 
-func (n *notifier) format(messages []string) (string, ext.Ext) {
+func (n *notifier) format(messages []string) (string, rTypes.Ext) {
 	formatMap := utils.GenerateMap(n.NotifyFormatter, messages)
 	utils.FormatAnyWithMap(&n.MessageParams, &formatMap)
 	data := utils.StructToDict(n.MessageParams)
-	return DefaultWebhook, ext.Data(data)
+	return DefaultWebhook, ext.Form(data)
 }
 
 func (n *notifier) Send(messages []string) error {
@@ -43,5 +44,5 @@ func (n *notifier) Send(messages []string) error {
 	if resp != nil && resp.Ok {
 		return nil
 	}
-	return fmt.Errorf("[QPush] [%v] %s", resp.StatusCode, resp.Content)
+	return fmt.Errorf("[QPush] [%v] %s", resp.StatusCode, resp.Raw)
 }

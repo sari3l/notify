@@ -5,7 +5,7 @@ import (
 	"github.com/sari3l/notify/types"
 	"github.com/sari3l/notify/utils"
 	"github.com/sari3l/requests"
-	"github.com/sari3l/requests/ext"
+	rTypes "github.com/sari3l/requests/types"
 )
 
 type Option struct {
@@ -27,7 +27,7 @@ func (opt *Option) ToNotifier() *notifier {
 	return noticer
 }
 
-func (n *notifier) format(messages []string) (string, ext.Dict, ext.Dict, map[string]any) {
+func (n *notifier) format(messages []string) (string, rTypes.Dict, rTypes.Dict, map[string]any) {
 	formatMap := utils.GenerateMap(n.NotifyFormatter, messages)
 	// webhook url 需要考虑要不要加一个urlencode
 	utils.FormatAnyWithMap(&n.Webhook, &formatMap)
@@ -38,9 +38,9 @@ func (n *notifier) format(messages []string) (string, ext.Dict, ext.Dict, map[st
 }
 
 func (n *notifier) Send(messages []string) error {
-	url, params, data, json := n.format(messages)
-	session := requests.Session(5, "", false, false)
-	_, prep := requests.PrepareRequest(n.Method, url, params, nil, nil, data, json, nil, nil, nil, nil)
+	url, params, form, json := n.format(messages)
+	session := requests.Session{}
+	_, prep := requests.PrepareRequest(n.Method, "GET", url, params, nil, nil, form, json, nil, nil, nil)
 	resp := session.Send(prep)
 	if resp != nil && resp.Ok {
 		return nil
@@ -48,5 +48,5 @@ func (n *notifier) Send(messages []string) error {
 	if resp == nil {
 		return fmt.Errorf("[Custom] connection refused\n")
 	}
-	return fmt.Errorf("[Custom] [%v] %s", resp.StatusCode, resp.Content)
+	return fmt.Errorf("[Custom] [%v] %s", resp.StatusCode, resp.Raw)
 }

@@ -6,6 +6,7 @@ import (
 	"github.com/sari3l/notify/utils"
 	"github.com/sari3l/requests"
 	"github.com/sari3l/requests/ext"
+	rTypes "github.com/sari3l/requests/types"
 )
 
 type Option struct {
@@ -32,12 +33,12 @@ func (opt *Option) ToNotifier() *notifier {
 	return noticer
 }
 
-func (n *notifier) format(messages []string) (string, ext.Ext, ext.Ext) {
+func (n *notifier) format(messages []string) (string, rTypes.Ext, rTypes.Ext) {
 	formatMap := utils.GenerateMap(n.NotifyFormatter, messages)
 	utils.FormatAnyWithMap(&n.MessageParams, &formatMap)
 	data := utils.StructToDict(n.MessageParams)
-	auth := ext.BasicAuth{Username: "api", Password: n.ApiKey}
-	return n.Webhook, ext.Auth(auth), ext.Data(data)
+	auth := rTypes.BasicAuth{Username: "api", Password: n.ApiKey}
+	return n.Webhook, ext.Auth(auth), ext.Form(data)
 }
 
 func (n *notifier) Send(messages []string) error {
@@ -45,5 +46,5 @@ func (n *notifier) Send(messages []string) error {
 	if resp != nil && resp.Ok {
 		return nil
 	}
-	return fmt.Errorf("[Mailgun] [%v] %s", resp.StatusCode, resp.Content)
+	return fmt.Errorf("[Mailgun] [%v] %s", resp.StatusCode, resp.Raw)
 }

@@ -6,6 +6,7 @@ import (
 	"github.com/sari3l/notify/utils"
 	"github.com/sari3l/requests"
 	"github.com/sari3l/requests/ext"
+	rTypes "github.com/sari3l/requests/types"
 	"time"
 )
 
@@ -33,7 +34,7 @@ func (opt *Option) ToNotifier() *notifier {
 	return noticer
 }
 
-func (n *notifier) format(messages []string) (string, ext.Ext) {
+func (n *notifier) format(messages []string) (string, rTypes.Ext) {
 	if n.Secret != "" {
 		timestamp := time.Now().UnixNano() / int64(time.Millisecond)
 		sha256 := utils.HmacSha256(fmt.Sprintf("%d\n%s", timestamp, n.Secret), n.Secret)
@@ -52,5 +53,5 @@ func (n *notifier) Send(messages []string) error {
 	if resp != nil && resp.Ok && resp.Json().Get("code").Int() == 0 {
 		return nil
 	}
-	return fmt.Errorf("[FeiShu] [%v] %s", resp.StatusCode, resp.Content)
+	return fmt.Errorf("[FeiShu] [%v] %s", resp.StatusCode, resp.Raw)
 }

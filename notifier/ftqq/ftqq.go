@@ -31,7 +31,7 @@ func (opt *Option) ToNotifier() *notifier {
 	return noticer
 }
 
-func (n *notifier) format(messages []string) (string, ext.Ext) {
+func (n *notifier) format(messages []string) (string, rTypes.Ext) {
 	formatMap := utils.GenerateMap(n.NotifyFormatter, messages)
 	utils.FormatAnyWithMap(&n.MessageParams, &formatMap)
 	data := utils.StructToDict(n.MessageParams)
@@ -43,5 +43,5 @@ func (n *notifier) Send(messages []string) error {
 	if resp != nil && resp.Ok {
 		return nil
 	}
-	return fmt.Errorf("[FTQQ] [%v] %s", resp.StatusCode, resp.Content)
+	return fmt.Errorf("[FTQQ] [%v] %s", resp.StatusCode, resp.Raw)
 }

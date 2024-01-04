@@ -3,7 +3,7 @@ package utils
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/sari3l/requests/ext"
+	"github.com/sari3l/requests/types"
 	"reflect"
 	"strconv"
 	"strings"
@@ -20,8 +20,8 @@ func StructToJson(obj any) map[string]any {
 
 // StructToDict 需要结构体字段Tag设置为 `dict:"目标键名"` 或 `dict:"目标键名,omitempty"`
 // 如 Text string `dict:"text,omitempty"`
-func StructToDict(obj any) ext.Dict {
-	dict := ext.Dict{}
+func StructToDict(obj any) types.Dict {
+	dict := types.Dict{}
 	ref := reflect.ValueOf(obj)
 	for i := 0; i < ref.NumField(); i++ {
 		tagOpt := ref.Type().Field(i).Tag.Get("dict")
