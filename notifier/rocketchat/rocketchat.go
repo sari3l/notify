@@ -1,7 +1,6 @@
 package rocketchat
 
 import (
-	"fmt"
 	"github.com/sari3l/notify/types"
 	"github.com/sari3l/notify/utils"
 	"github.com/sari3l/requests"
@@ -23,27 +22,26 @@ type MessageParams struct {
 	Color     *string `yaml:"color,omitempty" json:"color,omitempty"`
 }
 
-type notifier struct {
+type Notifier struct {
 	*Option
 }
 
-func (opt *Option) ToNotifier() *notifier {
-	noticer := &notifier{}
+func (opt *Option) ToNotifier() *Notifier {
+	noticer := &Notifier{}
 	noticer.Option = opt
 	return noticer
 }
 
-func (n *notifier) format(messages []string) (string, rTypes.Ext) {
+func (n *Notifier) format(messages []string) (string, rTypes.Ext) {
 	formatMap := utils.GenerateMap(n.NotifyFormatter, messages)
 	utils.FormatAnyWithMap(&n.MessageParams, &formatMap)
 	data := utils.StructToJson(n.MessageParams)
 	return n.Webhook, ext.Json(data)
 }
 
-func (n *notifier) Send(messages []string) error {
+func (n *Notifier) Send(messages []string) error {
 	resp := requests.Post(n.format(messages))
-	if resp != nil && resp.Ok {
-		return nil
-	}
-	return fmt.Errorf("[RocketChat] [%v] %s", resp.StatusCode, resp.Raw)
+	return utils.RespCheck("RocketChat", resp, func(request *requests.Response) bool {
+		return resp.Ok
+	})
 }

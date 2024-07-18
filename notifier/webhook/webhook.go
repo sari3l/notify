@@ -1,7 +1,6 @@
 package webhook
 
 import (
-	"fmt"
 	"github.com/sari3l/notify/types"
 	"github.com/sari3l/notify/utils"
 	"github.com/sari3l/requests"
@@ -17,17 +16,17 @@ type Option struct {
 	Json             map[string]any    `yaml:"json,omitempty"`
 }
 
-type notifier struct {
+type Notifier struct {
 	*Option
 }
 
-func (opt *Option) ToNotifier() *notifier {
-	noticer := &notifier{}
+func (opt *Option) ToNotifier() *Notifier {
+	noticer := &Notifier{}
 	noticer.Option = opt
 	return noticer
 }
 
-func (n *notifier) format(messages []string) (string, rTypes.Dict, rTypes.Dict, map[string]any) {
+func (n *Notifier) format(messages []string) (string, rTypes.Dict, rTypes.Dict, map[string]any) {
 	formatMap := utils.GenerateMap(n.NotifyFormatter, messages)
 	// webhook url 需要考虑要不要加一个urlencode
 	utils.FormatAnyWithMap(&n.Webhook, &formatMap)
@@ -37,16 +36,12 @@ func (n *notifier) format(messages []string) (string, rTypes.Dict, rTypes.Dict, 
 	return n.Webhook, n.Params, n.Data, n.Json
 }
 
-func (n *notifier) Send(messages []string) error {
+func (n *Notifier) Send(messages []string) error {
 	url, params, form, json := n.format(messages)
 	session := requests.Session{}
 	_, prep := requests.PrepareRequest(n.Method, "GET", url, params, nil, nil, form, json, nil, nil, nil)
 	resp := session.Send(prep)
-	if resp != nil && resp.Ok {
-		return nil
-	}
-	if resp == nil {
-		return fmt.Errorf("[Custom] connection refused\n")
-	}
-	return fmt.Errorf("[Custom] [%v] %s", resp.StatusCode, resp.Raw)
+	return utils.RespCheck("Custom", resp, func(request *requests.Response) bool {
+		return resp.Ok
+	})
 }

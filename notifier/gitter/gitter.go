@@ -1,7 +1,6 @@
 package gitter
 
 import (
-	"fmt"
 	"github.com/sari3l/notify/types"
 
 	"github.com/sari3l/notify/utils"
@@ -21,17 +20,17 @@ type MessageParams struct {
 	Text string `yaml:"text" json:"text"`
 }
 
-type notifier struct {
+type Notifier struct {
 	*Option
 }
 
-func (opt *Option) ToNotifier() *notifier {
-	noticer := &notifier{}
+func (opt *Option) ToNotifier() *Notifier {
+	noticer := &Notifier{}
 	noticer.Option = opt
 	return noticer
 }
 
-func (n *notifier) format(messages []string) (string, rTypes.Ext, rTypes.Ext) {
+func (n *Notifier) format(messages []string) (string, rTypes.Ext, rTypes.Ext) {
 	formatMap := utils.GenerateMap(n.NotifyFormatter, messages)
 	utils.FormatAnyWithMap(&n.MessageParams, &formatMap)
 	auth := rTypes.BearerAuth{Token: n.Token}
@@ -39,10 +38,9 @@ func (n *notifier) format(messages []string) (string, rTypes.Ext, rTypes.Ext) {
 	return n.Webhook, ext.Auth(auth), ext.Json(json)
 }
 
-func (n *notifier) Send(messages []string) error {
+func (n *Notifier) Send(messages []string) error {
 	resp := requests.Post(n.format(messages))
-	if resp != nil && resp.Json().Get("error").Str == "" {
-		return nil
-	}
-	return fmt.Errorf("[Gitter] [%v] %s", resp.StatusCode, resp.Raw)
+	return utils.RespCheck("Gitter", resp, func(request *requests.Response) bool {
+		return resp.Json().Get("error").Str == ""
+	})
 }

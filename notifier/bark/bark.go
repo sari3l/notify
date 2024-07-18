@@ -1,7 +1,6 @@
 package bark
 
 import (
-	"fmt"
 	"github.com/sari3l/notify/types"
 	"github.com/sari3l/notify/utils"
 	"github.com/sari3l/requests"
@@ -27,17 +26,17 @@ type MessageParams struct {
 	AutoCopy  *int    `yaml:"autoCopy,omitempty" dict:"autoCopy,omitempty"`
 }
 
-type notifier struct {
+type Notifier struct {
 	*Option
 }
 
-func (opt *Option) ToNotifier() *notifier {
-	noticer := &notifier{}
+func (opt *Option) ToNotifier() *Notifier {
+	noticer := &Notifier{}
 	noticer.Option = opt
 	return noticer
 }
 
-func (n *notifier) format(messages []string) (string, rTypes.Ext) {
+func (n *Notifier) format(messages []string) (string, rTypes.Ext) {
 	formatMap := utils.GenerateMap(n.NotifyFormatter, messages)
 	utils.FormatAnyWithMap(&n.Webhook, &formatMap)
 	utils.FormatAnyWithMap(&n.MessageParams, &formatMap)
@@ -45,10 +44,9 @@ func (n *notifier) format(messages []string) (string, rTypes.Ext) {
 	return n.Webhook, ext.Params(params)
 }
 
-func (n *notifier) Send(messages []string) error {
+func (n *Notifier) Send(messages []string) error {
 	resp := requests.Get(n.format(messages))
-	if resp != nil && resp.Ok {
-		return nil
-	}
-	return fmt.Errorf("[Bark] [%v] %s", resp.StatusCode, resp.Raw)
+	return utils.RespCheck("Bark", resp, func(request *requests.Response) bool {
+		return resp.Ok
+	})
 }

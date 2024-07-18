@@ -1,7 +1,6 @@
 package mailgun
 
 import (
-	"fmt"
 	"github.com/sari3l/notify/types"
 	"github.com/sari3l/notify/utils"
 	"github.com/sari3l/requests"
@@ -23,17 +22,17 @@ type MessageParams struct {
 	Text    string `yaml:"text" dict:"text"`
 }
 
-type notifier struct {
+type Notifier struct {
 	*Option
 }
 
-func (opt *Option) ToNotifier() *notifier {
-	noticer := &notifier{}
+func (opt *Option) ToNotifier() *Notifier {
+	noticer := &Notifier{}
 	noticer.Option = opt
 	return noticer
 }
 
-func (n *notifier) format(messages []string) (string, rTypes.Ext, rTypes.Ext) {
+func (n *Notifier) format(messages []string) (string, rTypes.Ext, rTypes.Ext) {
 	formatMap := utils.GenerateMap(n.NotifyFormatter, messages)
 	utils.FormatAnyWithMap(&n.MessageParams, &formatMap)
 	data := utils.StructToDict(n.MessageParams)
@@ -41,10 +40,9 @@ func (n *notifier) format(messages []string) (string, rTypes.Ext, rTypes.Ext) {
 	return n.Webhook, ext.Auth(auth), ext.Form(data)
 }
 
-func (n *notifier) Send(messages []string) error {
+func (n *Notifier) Send(messages []string) error {
 	resp := requests.Post(n.format(messages))
-	if resp != nil && resp.Ok {
-		return nil
-	}
-	return fmt.Errorf("[Mailgun] [%v] %s", resp.StatusCode, resp.Raw)
+	return utils.RespCheck("Mailgun", resp, func(request *requests.Response) bool {
+		return resp.Ok
+	})
 }

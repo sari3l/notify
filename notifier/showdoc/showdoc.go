@@ -1,7 +1,6 @@
 package showdoc
 
 import (
-	"fmt"
 	"github.com/sari3l/notify/types"
 	"github.com/sari3l/notify/utils"
 	"github.com/sari3l/requests"
@@ -20,27 +19,26 @@ type MessageParams struct {
 	Content string `yaml:"content" json:"content"`
 }
 
-type notifier struct {
+type Notifier struct {
 	*Option
 }
 
-func (opt *Option) ToNotifier() *notifier {
-	noticer := &notifier{}
+func (opt *Option) ToNotifier() *Notifier {
+	noticer := &Notifier{}
 	noticer.Option = opt
 	return noticer
 }
 
-func (n *notifier) format(messages []string) (string, rTypes.Ext) {
+func (n *Notifier) format(messages []string) (string, rTypes.Ext) {
 	formatMap := utils.GenerateMap(n.NotifyFormatter, messages)
 	utils.FormatAnyWithMap(&n.MessageParams, &formatMap)
 	json := utils.StructToJson(n.MessageParams)
 	return n.Webhook, ext.Json(json)
 }
 
-func (n *notifier) Send(messages []string) error {
+func (n *Notifier) Send(messages []string) error {
 	resp := requests.Post(n.format(messages))
-	if resp != nil && resp.Json().Get("error_code").Int() == 0 {
-		return nil
-	}
-	return fmt.Errorf("[ShowDoc] [%v] %s", resp.StatusCode, resp.Raw)
+	return utils.RespCheck("ShowDoc", resp, func(request *requests.Response) bool {
+		return resp.Json().Get("error_code").Int() == 0
+	})
 }

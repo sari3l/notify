@@ -24,17 +24,17 @@ type MessageParams struct {
 	Sign      *string        `json:"sign,omitempty"`
 }
 
-type notifier struct {
+type Notifier struct {
 	*Option
 }
 
-func (opt *Option) ToNotifier() *notifier {
-	noticer := &notifier{}
+func (opt *Option) ToNotifier() *Notifier {
+	noticer := &Notifier{}
 	noticer.Option = opt
 	return noticer
 }
 
-func (n *notifier) format(messages []string) (string, rTypes.Ext) {
+func (n *Notifier) format(messages []string) (string, rTypes.Ext) {
 	if n.Secret != "" {
 		timestamp := time.Now().UnixNano() / int64(time.Millisecond)
 		sha256 := utils.HmacSha256(fmt.Sprintf("%d\n%s", timestamp, n.Secret), n.Secret)
@@ -48,10 +48,9 @@ func (n *notifier) format(messages []string) (string, rTypes.Ext) {
 	return n.Webhook, ext.Json(json)
 }
 
-func (n *notifier) Send(messages []string) error {
+func (n *Notifier) Send(messages []string) error {
 	resp := requests.Post(n.format(messages))
-	if resp != nil && resp.Ok && resp.Json().Get("code").Int() == 0 {
-		return nil
-	}
-	return fmt.Errorf("[FeiShu] [%v] %s", resp.StatusCode, resp.Raw)
+	return utils.RespCheck("FeiShu", resp, func(request *requests.Response) bool {
+		return resp.Ok && resp.Json().Get("code").Int() == 0
+	})
 }

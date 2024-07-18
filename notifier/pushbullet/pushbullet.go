@@ -1,7 +1,6 @@
 package pushbullet
 
 import (
-	"fmt"
 	"github.com/sari3l/notify/types"
 	"github.com/sari3l/notify/utils"
 	"github.com/sari3l/requests"
@@ -49,17 +48,17 @@ type MessageParams struct {
 	ImageHeight             *int      `yaml:"imageHeight,omitempty" json:"image_height,omitempty"`
 }
 
-type notifier struct {
+type Notifier struct {
 	*Option
 }
 
-func (opt *Option) ToNotifier() *notifier {
-	noticer := &notifier{}
+func (opt *Option) ToNotifier() *Notifier {
+	noticer := &Notifier{}
 	noticer.Option = opt
 	return noticer
 }
 
-func (n *notifier) format(messages []string) (string, rTypes.Ext, rTypes.Ext) {
+func (n *Notifier) format(messages []string) (string, rTypes.Ext, rTypes.Ext) {
 	formatMap := utils.GenerateMap(n.NotifyFormatter, messages)
 	utils.FormatAnyWithMap(&n.MessageParams, &formatMap)
 	headers := rTypes.Dict{"Access-Token": n.Token}
@@ -67,10 +66,9 @@ func (n *notifier) format(messages []string) (string, rTypes.Ext, rTypes.Ext) {
 	return DefaultWebhook, ext.Headers(headers), ext.Json(json)
 }
 
-func (n *notifier) Send(messages []string) error {
+func (n *Notifier) Send(messages []string) error {
 	resp := requests.Post(n.format(messages))
-	if resp != nil && resp.Ok {
-		return nil
-	}
-	return fmt.Errorf("[PushBullet] [%v] %s", resp.StatusCode, resp.Raw)
+	return utils.RespCheck("PushBullet", resp, func(request *requests.Response) bool {
+		return resp.Ok
+	})
 }
