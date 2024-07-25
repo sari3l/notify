@@ -50,6 +50,16 @@ go install -v github.com/sari3l/notify/cmd/notify@latest
   - `echo -e "part1\npart2" | notify -n bark`
   - `notify part1 part22 -n bark`
 - 指定id、level、模块，或最低level广播
+- 多占位自动映射
+  ```golang
+  opt := feishu.Option{Webhook: viper.GetString("notify.webhook")}
+  opt.NotifyFormatter = []string{"{{part1}}", "{{part2}}"}
+  opt.MsgType = "text"
+  opt.Content = map[string]any{"text": "{{part2}}{{part1}}"}
+  opt.ToNotifer.Send([]string{"1","2"})
+  
+  >> 21
+  ```
 
 ## Licenses
 
