@@ -19,8 +19,9 @@ type Option struct {
 
 type MessageParams struct {
 	MsgType   string         `yaml:"msgType" json:"msg_type"`
-	Content   map[string]any `yaml:"content" json:"content"`
+	Content   map[string]any `yaml:"content,omitempty" json:"content,omitempty"`
 	Timestamp *string        `yaml:"timestamp,omitempty" json:"timestamp,omitempty"`
+	Card      map[string]any `yaml:"card,omitempty" json:"card,omitempty"`
 	Sign      *string        `json:"sign,omitempty"`
 }
 

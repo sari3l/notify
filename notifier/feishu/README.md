@@ -1,6 +1,8 @@
 # FeiShu
 
-> 文档 https://open.feishu.cn/document/ukTMukTMukTM/ucTM5YjL3ETO24yNxkjN
+> 文档 
+>   1. https://open.feishu.cn/document/ukTMukTMukTM/ucTM5YjL3ETO24yNxkjN
+>   2. https://open.larksuite.com/document/client-docs/bot-v3/add-custom-bot#f62e72d5
 > 
 > 飞书加签有BUG，也是奇葩 
 
@@ -18,7 +20,8 @@
 | 参数配置      | 类型             | feishu    | yaml读取    | yaml可选 |
 |-----------|----------------|-----------|-----------|--------|
 | MsgType   | string         | msg_type  | msgType   |        |
-| Content   | map[string]any | content   | content   |        |
+| Content   | map[string]any | content   | content   | ✔      |
+| Card      | map[string]any | card      | card      | ✔      |
 | Timestamp | *string        | timestamp | timestamp | ✔      |
 | Sign      | *string        | sign      | sign      | ✔      |
 
