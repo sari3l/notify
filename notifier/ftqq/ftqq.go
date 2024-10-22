@@ -33,9 +33,9 @@ func (opt *Option) ToNotifier() *Notifier {
 
 func (n *Notifier) format(messages []string) (string, rTypes.Ext) {
 	formatMap := utils.GenerateMap(n.NotifyFormatter, messages)
-	utils.FormatAnyWithMap(&n.MessageParams, &formatMap)
-	data := utils.StructToDict(n.MessageParams)
-	return n.Webhook, ext.Form(data)
+	data := utils.FormatAnyWithMap(n.MessageParams, formatMap)
+	dict := utils.StructToDict(data)
+	return n.Webhook, ext.Form(dict)
 }
 
 func (n *Notifier) Send(messages []string) error {

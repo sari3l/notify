@@ -20,8 +20,8 @@ type Option struct {
 type MessageParams struct {
 	MsgType   string         `yaml:"msgType" json:"msg_type"`
 	Content   map[string]any `yaml:"content,omitempty" json:"content,omitempty"`
-	Timestamp *string        `yaml:"timestamp,omitempty" json:"timestamp,omitempty"`
 	Card      map[string]any `yaml:"card,omitempty" json:"card,omitempty"`
+	Timestamp *string        `yaml:"timestamp,omitempty" json:"timestamp,omitempty"`
 	Sign      *string        `json:"sign,omitempty"`
 }
 
@@ -44,8 +44,8 @@ func (n *Notifier) format(messages []string) (string, rTypes.Ext) {
 		n.Sign = &sha256
 	}
 	formatMap := utils.GenerateMap(n.NotifyFormatter, messages)
-	utils.FormatAnyWithMap(&n.MessageParams, &formatMap)
-	json := utils.StructToJson(n.MessageParams)
+	data := utils.FormatAnyWithMap(n.MessageParams, formatMap)
+	json := utils.StructToJson(data)
 	return n.Webhook, ext.Json(json)
 }
 

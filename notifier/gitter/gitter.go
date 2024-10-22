@@ -32,9 +32,9 @@ func (opt *Option) ToNotifier() *Notifier {
 
 func (n *Notifier) format(messages []string) (string, rTypes.Ext, rTypes.Ext) {
 	formatMap := utils.GenerateMap(n.NotifyFormatter, messages)
-	utils.FormatAnyWithMap(&n.MessageParams, &formatMap)
+	data := utils.FormatAnyWithMap(n.MessageParams, formatMap)
 	auth := rTypes.BearerAuth{Token: n.Token}
-	json := utils.StructToJson(n.MessageParams)
+	json := utils.StructToJson(data)
 	return n.Webhook, ext.Auth(auth), ext.Json(json)
 }
 

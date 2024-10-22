@@ -78,14 +78,14 @@ func (n *Notifier) format(messages []string) (string, rTypes.Ext, rTypes.Ext) {
 	}
 	// 信息-类型处理
 	formatMap := utils.GenerateMap(n.NotifyFormatter, messages)
-	utils.FormatAnyWithMap(&n.MessageParams, &formatMap)
+	data := utils.FormatAnyWithMap(n.MessageParams, formatMap)
 
-	data := map[string]interface{}{
+	jsonData := map[string]interface{}{
 		"msgtype": n.MessageType,
 		"at":      utils.StructToJson(n.AtOption),
 	}
-	data[n.MessageType] = utils.StructToJson(n.MessageParams)
-	return DefaultServer, ext.Params(params), ext.Json(data)
+	jsonData[n.MessageType] = utils.StructToJson(data)
+	return DefaultServer, ext.Params(params), ext.Json(jsonData)
 }
 
 func (n *Notifier) Send(messages []string) error {

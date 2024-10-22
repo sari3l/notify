@@ -37,10 +37,10 @@ func (opt *Option) ToNotifier() *Notifier {
 
 func (n *Notifier) format(messages []string) (string, rTypes.Ext, rTypes.Ext) {
 	formatMap := utils.GenerateMap(n.NotifyFormatter, messages)
-	utils.FormatAnyWithMap(&n.MessageParams, &formatMap)
-	data := utils.StructToDict(n.MessageParams)
+	data := utils.FormatAnyWithMap(&n.MessageParams, &formatMap)
+	dict := utils.StructToDict(data)
 	auth := rTypes.BasicAuth{Username: n.BotEmail, Password: n.BotKey}
-	return n.Webhook, ext.Auth(auth), ext.Form(data)
+	return n.Webhook, ext.Auth(auth), ext.Form(dict)
 }
 
 func (n *Notifier) Send(messages []string) error {

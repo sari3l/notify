@@ -38,10 +38,10 @@ func (opt *Option) ToNotifier() *Notifier {
 
 func (n *Notifier) format(messages []string) (string, rTypes.Ext) {
 	formatMap := utils.GenerateMap(n.NotifyFormatter, messages)
-	utils.FormatAnyWithMap(&n.Webhook, &formatMap)
-	utils.FormatAnyWithMap(&n.MessageParams, &formatMap)
-	params := utils.StructToDict(n.MessageParams)
-	return n.Webhook, ext.Params(params)
+	url := utils.FormatAnyWithMap(n.Webhook, formatMap)
+	data := utils.FormatAnyWithMap(n.MessageParams, formatMap)
+	params := utils.StructToDict(data)
+	return url.(string), ext.Params(params)
 }
 
 func (n *Notifier) Send(messages []string) error {

@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"github.com/mohae/deepcopy"
 	"reflect"
 	"strings"
 )
@@ -66,11 +67,12 @@ func FormatValueWithMap(value reflect.Value, msgMap *map[string]string) reflect.
 }
 
 // FormatAnyWithMap 传入指针
-func FormatAnyWithMap(obj any, msgMap *map[string]string) any {
-	if len(*msgMap) == 0 {
+func FormatAnyWithMap(obj any, msgMap map[string]string) (data any) {
+	data = deepcopy.Copy(obj)
+	if len(msgMap) == 0 {
 		return obj
 	}
-	ref := reflect.ValueOf(obj)
-	ref.Elem().Set(FormatValueWithMap(ref.Elem(), msgMap))
-	return obj
+	ref := reflect.ValueOf(&data)
+	ref.Elem().Set(FormatValueWithMap(ref.Elem(), &msgMap))
+	return data
 }

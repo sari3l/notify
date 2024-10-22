@@ -60,9 +60,9 @@ func (opt *Option) ToNotifier() *Notifier {
 
 func (n *Notifier) format(messages []string) (string, rTypes.Ext, rTypes.Ext) {
 	formatMap := utils.GenerateMap(n.NotifyFormatter, messages)
-	utils.FormatAnyWithMap(&n.MessageParams, &formatMap)
+	data := utils.FormatAnyWithMap(n.MessageParams, formatMap)
 	headers := rTypes.Dict{"Access-Token": n.Token}
-	json := utils.StructToJson(n.MessageParams)
+	json := utils.StructToJson(data)
 	return DefaultWebhook, ext.Headers(headers), ext.Json(json)
 }
 
